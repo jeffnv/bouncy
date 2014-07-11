@@ -6,11 +6,24 @@ function Square(x, y) {
   this.dead = false;
 };
 
-Square.prototype.move = function () {
+Square.prototype.atBottom = function(){
+  return this.y >= HEIGHT;
+}
+
+Square.prototype.atTarget = function(target){
+
+  var rightX = this.x >= target.x && this.x <= (target.x + target.width);
+  var dy = this.y - target.y;
+  //if it's 0 or less pixels above
+  //or 20 or move pixels below
+  var rightY = dy > -5 && dy < 20;
+  return rightX && rightY;
+}
+
+Square.prototype.move = function (target) {
   this.y = this.y + this.speedY;
   this.x = this.x + this.speedX;
-  if (this.y >= 499) {
-    this.y = 499;
+  if(this.speedY > 0 && (this.atBottom() || this.atTarget(target))){
     this.speedY = (this.speedY - 1) * -1;
   }
   if (this.speedY < 50) {
@@ -62,6 +75,8 @@ Squares.prototype.keyUp = function (event) {
 
 Squares.prototype.tick = function () {
   this.ctx.clearRect(0, 0, 500, 500);
+  this.square.applyWind(this.measureWind());
+  this.square.move(this.target);
   this.drawSquare();
   this.wind.moveParticles(this.measureWind());
   this.wind.drawParticles(this.ctx);
@@ -70,8 +85,6 @@ Squares.prototype.tick = function () {
 };
 
 Squares.prototype.drawSquare = function () {
-  this.square.applyWind(this.measureWind());
-  this.square.move();
   this.ctx.fillStyle = "#F00000";
   this.ctx.fillRect(this.square.x, this.square.y, 8, 8);
 };
