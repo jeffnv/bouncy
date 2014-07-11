@@ -36,7 +36,6 @@ function Squares(w, h) {
   WIDTH = w;
   HEIGHT = h;
   this.wind = new Wind();
-  this.target = new Target();
 }
 
 Squares.prototype.run = function (canvas) {
@@ -65,7 +64,6 @@ Squares.prototype.tick = function () {
   this.drawSquare();
   this.wind.moveParticles(this.measureWind());
   this.wind.drawParticles(this.ctx);
-  this.target.drawTarget(this.ctx);
 };
 
 Squares.prototype.drawSquare = function () {
@@ -108,8 +106,8 @@ Wind = function () {
   this.refreshParticles();
 }
 
-Wind.prototype.moveParticles = function (force) {
-  this.particles.forEach(function (p) {
+Wind.prototype.moveParticles = function(force) {
+  this.particles.forEach(function(p){
     p.blow(force);
     p.move();
   });
@@ -146,8 +144,8 @@ Wind.prototype.refreshParticles = function () {
   }
 }
 
-Particle = function (x, y) {
-  Moveable.call(this, x, y, 0, 1);
+Particle = function (x) {
+  Moveable.call(this, x, 0, 0, 1);
 }
 
 Particle.inherits(Moveable);
@@ -158,20 +156,4 @@ Particle.prototype.blow = function (force) {
 
 Particle.randomParticle = function () {
   return new Particle(Math.random() * WIDTH, Math.random() * HEIGHT);
-}
-
-Target = function()  {
-  Moveable.call(this, 0, 0, 0, 0);
-}
-
-Target.inherits(Moveable);
-
-Target.prototype.drawTarget = function(ctx) {
-  ctx.beginPath();
-  ctx.moveTo(200, canvas.height / 2);
-  ctx.lineTo(canvas.width - 200, canvas.height / 2);
-  ctx.lineWidth = 20;
-  ctx.strokeStyle = '#0000ff';
-  ctx.lineCap = 'round';
-  ctx.stroke();
 }
